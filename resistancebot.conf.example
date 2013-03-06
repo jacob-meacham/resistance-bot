@@ -1,0 +1,7 @@
+[resistancebot]
+host = boswiki
+channel = #resistance
+nickname = resbot
+nickpass =
+resistance_wins = 0
+empire_wins = 0
