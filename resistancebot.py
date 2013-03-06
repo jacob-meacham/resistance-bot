@@ -29,10 +29,10 @@ private messages and channel traffic.  Commands in channel messages
 are given by prefixing the text by the bot name followed by a colon."""
 
 import sys, string, random, time, os.path
-from ircbot import SingleServerIRCBot
-import irclib
-from irclib import nm_to_n, nm_to_h, irc_lower, parse_channel_modes
-from botcommon import OutputManager
+from irclib.ircbot import SingleServerIRCBot
+import irclib.irclib
+from irclib.irclib import nm_to_n, nm_to_h, irc_lower, parse_channel_modes
+from irclib.botcommon import OutputManager
 import random
 from random import choice
 
@@ -862,7 +862,7 @@ class ResistanceBot(SingleServerIRCBot):
             stats.write("0" + "\n")
             stats.close()
             self.say_public("New stats file created for " + player + ".")
-            
+
         stats = open(player + ".dat", "r")
         srwins = stats.readline()
         srlosses = stats.readline()
@@ -1053,12 +1053,12 @@ class ResistanceBot(SingleServerIRCBot):
         self.reply(e, "Valid commands: '%s'" % "', '".join(cmds))
 
     def cmd_slap(self, args, e):
-	if args[0] == "all":
-	    for member in self.members_in_room:
-		    if member != self.desired_nickname and member != nm_to_n(e.source()):
-	            self.reply(e, "You slap " + member + " around a bit with a large trout.")
-    else:
-        self.reply(e, "You slap " + args[0] + " around a bit with a large trout.")
+    	if args[0] == "all":
+            slapped_players = [m for m in self.members_in_room if m != self.desired_nickname and m != nm_to_n(e.source())]
+            for slapped in slapped_players:
+                self.reply(e, "You slap " + member + " around a bit with a large trout.")
+        else:
+            self.reply(e, "You slap " + args[0] + " around a bit with a large trout.")
   
     def cmd_stats(self, args, e):
         if self.gamestate == self.GAMESTATE_RUNNING:
@@ -1161,10 +1161,10 @@ class ResistanceBot(SingleServerIRCBot):
         if player not in self.players:
             self.reply(e, 'You can\'t bring someone into a game that you haven\'t even joined!')
             return
-            
+        
         if player == "overall":
-	       self.reply(e, 'You cannot bring overall into the game. Stop trying to break resbot!')
-           return
+            self.reply(e, 'You cannot bring overall into the game. Stop trying to break resbot!')
+            return
         
         # Get the player that they're trying to bring:
         if len(args) != 1:
