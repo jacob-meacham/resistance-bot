@@ -1,0 +1,7 @@
+host = 'irc.yojoe.local'
+port = 6697
+channel = '#resistance'
+nickname = 'resbot'
+nickpass = ''
+moderation = False
+debug = True
