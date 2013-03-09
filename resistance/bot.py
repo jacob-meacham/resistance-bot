@@ -37,9 +37,6 @@ class ResistanceBot(GameBot):
     def _renameUser(self, old, new):
         GameBot._renameUser(self, old, new)
         self.game.rename_user(old, new)
-
-        # TODO: This is ugly
-        self.players = self.game.players
   
     def _removeUser(self, nick):
         GameBot._removeUser(self, nick)
@@ -48,9 +45,6 @@ class ResistanceBot(GameBot):
             self.game_starter = None
 
         self.game.remove_user(nick)
-        
-        #TODO: This is ugly
-        self.players = self.game.players
 
     def end_game(self, game_ender):
         if self.game.state == self.game.GAMESTATE_NONE:
@@ -205,7 +199,7 @@ class ResistanceBot(GameBot):
         if self.game.state == self.game.GAMESTATE_RUNNING:
             self.game.print_stats()
         elif self.game.state == self.game.GAMESTATE_STARTING:
-            self.reply(e, "A new game is starting, current players are %s" % (self.players,))
+            self.reply(e, "A new game is starting, current players are %s" % (self.game.players,))
         else:
             self.reply(e, "No game is in progress.")
   
@@ -238,10 +232,7 @@ class ResistanceBot(GameBot):
             self.game.state = self.game.GAMESTATE_STARTING
             self.game_starter = game_starter
             self.game_starter_last_seen = time.time()
-
-            # TODO: Hacky
             self.game.players.append(game_starter)
-            self.players.append(game_starter)
 
             self.say_public("A new game has been started by %s; "
                 "say '%s: join' to join the game."
@@ -259,7 +250,7 @@ class ResistanceBot(GameBot):
             self.game_starter = game_starter
             self.game_starter_last_seen = time.time()
 
-            if len(self.players) < settings.min_users:
+            if len(self.game.players) < settings.min_users:
                 self.say_public("Sorry, to start a game, there must be at least active %d players." % (settings.min_users))
             else:
                 self.fix_modes()
@@ -284,9 +275,6 @@ class ResistanceBot(GameBot):
             self.reply(e, 'Only 10 players are allowed to play. You\'ll have to wait')
         else:
             self.game.players.append(player)
-
-            # TODO: Hacky
-            self.players = self.game.players
 
             self.reply(e, 'You are now in the game.')
             self.fix_modes()
@@ -315,9 +303,6 @@ class ResistanceBot(GameBot):
             return
         else:
             self.game.players.append(args[0])
-
-            # TODO: Hacky
-            self.players = self.game.players
 
             self.reply(e, 'Nice job, you just brought ' + args[0] + ' into the game, even though they\'re probably AFK.')
             self.fix_modes()

@@ -24,6 +24,7 @@ import sys, string, random, time, os.path
 from random import choice
 from mission import mission_fiction
 import settings
+from stats import Session, Player, Game
 
 mission_size = [
                 [2,3,2,3,3], # 5 players
@@ -284,27 +285,18 @@ class ResistanceGame:
             self.phase[self.cur_phase]()
     
     def check_game_over(self):
+        game_over = False
         if self.resistance_rounds >= 3:
             self.messenger.say_public('\x034The Resistance\x0f\x02\x02 has successfully \x034destroyed\x0f\x02\x02 the Empire!')
-	    if self.ranked:
-	        self.recordoverallresistancewin()
-	        for member in self.players:
-		    if member in self.spies:
-		        self.recordempireloss(member)
-		    else:
-		        self.recordresistancewin(member)
-            return True
+            game_over = True
         elif self.spy_rounds >= 3:
             self.messenger.say_public('The \x034Imperial Spies\x0f\x02\x02 have successfully \x034sabotaged\x0f\x02\x02 the Resistance!')
-            if self.ranked:
-                self.recordoverallempirewin()
-	        for member in self.players:
-	    	    if member in self.spies:
-	      	    	self.recordempirewin(member)
-	   	    else:
-  		    	self.recordresistanceloss(member)
-            return True
-        return False
+            game_over = True
+
+        if game_over and self.ranked:
+            self.write_stats(self.spy_rounds >= 3)
+
+        return game_over
         
     def print_score(self):
         self.messenger.say_public("Score on Mission " + str(self.cur_round) + ":")
@@ -422,211 +414,30 @@ class ResistanceGame:
         if self.check_mission():
             self.mission_results()
         
-    def recordoverallresistancewin(self):
-        if not os.path.exists("overall.dat"):
-            stats = open("overall.dat", "w")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.close()
+    def write_stats(self, spies_won):
+        session = Session()
 
-        self.messenger.say_public("New stats file created for overall.")
-            
-        stats = open("overall.dat", "r")
-        srwins = stats.readline()
-        sewins = stats.readline()
-        
-        irwins = int(srwins)
-        iewins = int(sewins)
-        
-        srwins = str(irwins)
-        sewins = str(iewins)
-        
-        irwins = irwins + 1
-        srwins = str(irwins)
-        stats.close()
+        # First, write the game:
+        game = Game(num_players=len(self.players), date=datetime.datetime.utcnow(), resistance_rounds=self.resistance_rounds, spy_rounds=self.spy_rounds)
 
-        stats = open("overall.dat", "w")
-        stats.write(srwins + "\n")
-        stats.write(sewins + "\n")
-        stats.close()
-        self.messenger.say_public("Stats written for overall.")
+        for player_name in self.players:
+            player = Player.query.filter_by(name=player_name)
+            if player is None:
+                player = Player(name=player_name)
 
-    def recordoverallempirewin(self):
-        if not os.path.exists("overall.dat"):
-            stats = open("overall.dat", "w")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.close()
-        self.messenger.say_public("New stats file created for overall.")
-                
-        stats = open("overall.dat", "r")
-        srwins = stats.readline()
-        sewins = stats.readline()
-        
-        irwins = int(srwins)
-        iewins = int(sewins)
-        
-        srwins = str(irwins)
-        sewins = str(iewins)
-        
-        iewins = iewins + 1
-        sewins = str(iewins)
-        stats.close()
+            if player in self.spies:
+                if spies_won:
+                    player.spy_wins = player.spy_wins + 1
+                else:
+                    player.spy_losses = player.spy_losses + 1
+            else:
+                if not spies_won: 
+                    player.resistance_wins = player.resistance_wins + 1
+                else:
+                    player.resistance_losses = player.resistance_losses + 1
 
-        stats = open("overall.dat", "w")
-        stats.write(srwins + "\n")
-        stats.write(sewins + "\n")
-        stats.close()
-        self.messenger.say_public("Stats written for overall.")
-        
-    def recordresistancewin(self, player):
-        if not os.path.exists(player + ".dat"):
-            stats = open(player + ".dat", "w")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.close()
-            self.messenger.say_public("New stats file created for " + player + ".")
+            game.players.append(player)
+            session.add(player)
 
-        stats = open(player + ".dat", "r")
-        srwins = stats.readline()
-        srlosses = stats.readline()
-        sewins = stats.readline()
-        selosses = stats.readline()
-        
-        irwins = int(srwins)
-        irlosses = int(srlosses)
-        iewins = int(sewins)
-        ielosses = int(selosses)
-        
-        srwins = str(irwins)
-        srlosses = str(irlosses)
-        sewins = str(iewins)
-        selosses = str(ielosses)
-        
-        irwins = irwins + 1
-        srwins = str(irwins)
-        stats.close()
-
-        stats = open(player + ".dat", "w")
-        stats.write(srwins + "\n")
-        stats.write(srlosses + "\n")
-        stats.write(sewins + "\n")
-        stats.write(selosses + "\n")
-        stats.close()
-        self.messenger.say_public("Stats written for " + player + ".")
-
-    def recordresistanceloss(self, player):
-        if not os.path.exists(player + ".dat"):
-            stats = open(player + ".dat", "w")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.close()
-            self.messenger.say_public("New stats file created for " + player + ".")
-
-        stats = open(player + ".dat", "r")
-        srwins = stats.readline()
-        srlosses = stats.readline()
-        sewins = stats.readline()
-        selosses = stats.readline()
-        
-        irwins = int(srwins)
-        irlosses = int(srlosses)
-        iewins = int(sewins)
-        ielosses = int(selosses)
-        
-        srwins = str(irwins)
-        srlosses = str(irlosses)
-        sewins = str(iewins)
-        selosses = str(ielosses)
-        
-        irlosses = irlosses + 1
-        srlosses = str(irlosses)
-        stats.close()
-
-        stats = open(player + ".dat", "w")
-        stats.write(srwins + "\n")
-        stats.write(srlosses + "\n")
-        stats.write(sewins + "\n")
-        stats.write(selosses + "\n")
-        stats.close()
-        self.messenger.say_public("Stats written for " + player + ".")
-        
-    def recordempirewin(self, player):
-        if not os.path.exists(player + ".dat"):
-            stats = open(player + ".dat", "w")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.close()
-            self.messenger.say_public("New stats file created for " + player + ".")
-
-        stats = open(player + ".dat", "r")
-        srwins = stats.readline()
-        srlosses = stats.readline()
-        sewins = stats.readline()
-        selosses = stats.readline()
-        
-        irwins = int(srwins)
-        irlosses = int(srlosses)
-        iewins = int(sewins)
-        ielosses = int(selosses)
-
-        srwins = str(irwins)
-        srlosses = str(irlosses)
-        sewins = str(iewins)
-        selosses = str(ielosses)
-        
-        iewins = iewins + 1
-        sewins = str(iewins)
-        stats.close()
-
-        stats = open(player + ".dat", "w")
-        stats.write(srwins + "\n")
-        stats.write(srlosses + "\n")
-        stats.write(sewins + "\n")
-        stats.write(selosses + "\n")
-        stats.close()
-        self.messenger.say_public("Stats written for " + player + ".")
-
-    def recordempireloss(self, player):
-        if not os.path.exists(player + ".dat"):
-            stats = open(player + ".dat", "w")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.write("0" + "\n")
-            stats.close()
-            self.messenger.say_public("New stats file created for " + player + ".")
-
-        stats = open(player + ".dat", "r")
-        srwins = stats.readline()
-        srlosses = stats.readline()
-        sewins = stats.readline()
-        selosses = stats.readline()
-        
-        irwins = int(srwins)
-        irlosses = int(srlosses)
-        iewins = int(sewins)
-        ielosses = int(selosses)
-
-        srwins = str(irwins)
-        srlosses = str(irlosses)
-        sewins = str(iewins)
-        selosses = str(ielosses)
-        
-        ielosses = ielosses + 1
-        selosses = str(ielosses)
-        stats.close()
-
-        stats = open(player + ".dat", "w")
-        stats.write(srwins + "\n")
-        stats.write(srlosses + "\n")
-        stats.write(sewins + "\n")
-        stats.write(selosses + "\n")
-        stats.close()
-        self.messenger.say_public("Stats written for " + player + ".")
+        session.add(game)
+        session.commit()

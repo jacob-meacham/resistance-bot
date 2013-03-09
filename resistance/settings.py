@@ -17,10 +17,15 @@
 # Code based on wolfbot.py (https://code.google.com/p/ircbot-collection/), 
 # which itself is based on example bot and irc-bot class from
 # Joel Rosdahl <joel@rosdahl.net>, author of included python-irclib.
+import os.path
 
-min_users = 1
+min_users = 5
 default_port = 6697
 
 ranked_default = True
 blind_default = False
 instawin_default = False
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+SQLALCHEMY_DB_URI = 'sqlite:///' + os.path.join(basedir, 'db', 'stats.db')
+SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'migrations')
