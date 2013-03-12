@@ -43,7 +43,6 @@ class GameBot(SingleServerIRCBot):
         self.desired_nickname = nickname
         self.nickpass = nickpass
         self.debug = debug
-        self.players = []
         self.members_in_room = []
         self.moderation = moderation
 
@@ -164,19 +163,19 @@ class GameBot(SingleServerIRCBot):
         elif not is_moderated and should_be_moderated:
             self.connection.mode(self.channel, '+m')
     
-        if should_be_moderated:
-            voice = []
-            devoice = []
-            for user in chobj.users():
-                is_live = user in self.players
-                is_voiced = chobj.is_voiced(user)
-                if is_live and not is_voiced:
-                   voice.append(user)
-                elif not is_live and is_voiced:
-                  devoice.append(user)
+        # if should_be_moderated:
+        #     voice = []
+        #     devoice = []
+        #     for user in chobj.users():
+        #         is_live = user in self.players
+        #         is_voiced = chobj.is_voiced(user)
+        #         if is_live and not is_voiced:
+        #            voice.append(user)
+        #         elif not is_live and is_voiced:
+        #           devoice.append(user)
             
-            self.multimode('+v', voice)
-            self.multimode('-v', devoice)
+        #     self.multimode('+v', voice)
+        #     self.multimode('-v', devoice)
   
     def multimode(self, mode, nicks):
         max_batch = 4 # FIXME: Get this from features message
