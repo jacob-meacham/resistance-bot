@@ -22,6 +22,13 @@ class Player(Base):
 	resistance_wins = Column(Integer)
 	resistance_losses = Column(Integer)
 
+	def __init__(self, name):
+		self.name = name
+		spy_wins = 0
+		spy_losses = 0
+		resistance_wins = 0
+		resistance_losses = 0
+
 	games = relationship("Game",
 		secondary=player_game_table,
 		backref="players")
