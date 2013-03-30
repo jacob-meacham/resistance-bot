@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Date, Integer, String, ForeignKey, Table
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from settings import SQLALCHEMY_DB_URI
@@ -22,23 +22,23 @@ class Player(Base):
 	resistance_wins = Column(Integer)
 	resistance_losses = Column(Integer)
 
-	def __init__(self, name):
-		self.name = name
-		spy_wins = 0
-		spy_losses = 0
-		resistance_wins = 0
-		resistance_losses = 0
-
 	games = relationship("Game",
 		secondary=player_game_table,
 		backref="players")
+
+	def __init__(self, name):
+		self.name = name
+		self.spy_wins = 0
+		self.spy_losses = 0
+		self.resistance_wins = 0
+		self.resistance_losses = 0
 
 class Game(Base):
 	__tablename__ = 'game'
 
 	id = Column(Integer, primary_key=True)
 	num_players = Column(Integer)
-	date = Column(Date)
+	date = Column(DateTime)
 	resistance_rounds = Column(Integer)
 	spy_rounds = Column(Integer)
 
