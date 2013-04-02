@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table
+from sqlalchemy import Column, DateTime, Integer, Float, String, ForeignKey, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from settings import SQLALCHEMY_DB_URI
@@ -17,6 +17,9 @@ class Player(Base):
 
 	id = Column(Integer, primary_key=True)
 	name = Column(String(80))
+	win_percent = Column(Float)
+	total_wins = Column(Integer)
+	total_losses = Column(Integer)
 	spy_wins = Column(Integer)
 	spy_losses = Column(Integer)
 	resistance_wins = Column(Integer)
@@ -28,6 +31,9 @@ class Player(Base):
 
 	def __init__(self, name):
 		self.name = name
+		self.win_percent = 0.0
+		self.total_wins = 0
+		self.total_losses = 0
 		self.spy_wins = 0
 		self.spy_losses = 0
 		self.resistance_wins = 0
