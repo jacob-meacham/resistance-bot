@@ -1,4 +1,4 @@
-host = 'irc.yojoe.local'
+host = 'localhost'
 port = 6697
 channel = '#resistance'
 nickname = 'resbot'
