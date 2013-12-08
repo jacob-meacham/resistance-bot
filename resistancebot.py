@@ -32,6 +32,7 @@ from resistance.bot import ResistanceBot
 import config
 import gettext
 import locale
+import logging
  
 def init_localization(localization_filename):
   if localization_filename is not None:
@@ -43,14 +44,14 @@ def init_localization(localization_filename):
     filename = "i18n/messages_%s.mo" % locale.getlocale()[0][0:2]
   
   try:
-    print 'Opening message file %s' % filename
+    logging.debug('Opening message file %s' % filename)
     trans = gettext.GNUTranslations(open(filename, "rb"))
   except IOError:
-    print 'Using default messages'
+    logging.debug('Using default messages')
     trans = gettext.NullTranslations()
  
   trans.install()
-  print 'localization initialized!'
+  logging.debug('localization initialized!')
 
 def main():
     init_localization(config.localization_filename)

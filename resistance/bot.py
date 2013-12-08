@@ -25,7 +25,7 @@ import settings
 
 class ResistanceBot(GameBot):    
     def __init__(self, channel, nickname, nickpass, server, port=settings.default_port, debug=False, moderation=True):
-        self.game = ResistanceGame(self, debug)
+        self.game = ResistanceGame(self)
         self.game_starter = None
 
         GameBot.__init__(self, channel, nickname, nickpass, server, port, debug, moderation=moderation)

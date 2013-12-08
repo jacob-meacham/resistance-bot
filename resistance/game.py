@@ -24,6 +24,7 @@ from random import choice, randrange
 from mission import mission_fiction
 import datetime
 import settings
+import logging
 from stats import Session, Player, Game
 
 mission_size = [
@@ -39,9 +40,8 @@ IRC_BOLD = "\x02"
 class ResistanceGame:
     GAMESTATE_NONE, GAMESTATE_STARTING, GAMESTATE_RUNNING  = range(3)
     
-    def __init__(self, messenger, debug):
+    def __init__(self, messenger):
     	self.messenger = messenger
-        self.debug = debug
 
         self.ranked = settings.ranked_default
     	self.blind_spies = settings.blind_default
@@ -165,8 +165,7 @@ class ResistanceGame:
                     len(other_spies)) % {'spy_list': self.build_list_string(other_spies)}
                 self.messenger.say_private(spy, message)
         
-        if self.debug:
-            print _("SPIES: %s") % ' '.join(self.spies)
+        logging.debug(_("SPIES: %s") % ' '.join(self.spies))
                 
         self.cur_phase = "ChooseTeam"
         self.phase[self.cur_phase]()    

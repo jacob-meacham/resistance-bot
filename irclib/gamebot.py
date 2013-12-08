@@ -18,7 +18,7 @@
 # which itself is based on example bot and irc-bot class from
 # Joel Rosdahl <joel@rosdahl.net>, author of included python-irclib.
 
-import sys, string
+import string
 from ircbot import SingleServerIRCBot
 import irclib
 from irclib import nm_to_n, irc_lower, parse_channel_modes
