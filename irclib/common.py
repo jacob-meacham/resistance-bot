@@ -7,7 +7,6 @@ import os
 import time
 from threading import Thread, Event
 
-
 class OutputManager(Thread):
   def __init__(self, connection, delay=.5):
     Thread.__init__(self)

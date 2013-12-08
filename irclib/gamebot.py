@@ -18,13 +18,11 @@
 # which itself is based on example bot and irc-bot class from
 # Joel Rosdahl <joel@rosdahl.net>, author of included python-irclib.
 
-import sys, string, random, time, os.path
+import sys, string
 from ircbot import SingleServerIRCBot
 import irclib
-from irclib import nm_to_n, nm_to_h, irc_lower, parse_channel_modes
+from irclib import nm_to_n, irc_lower, parse_channel_modes
 from common import OutputManager
-import random
-from random import choice
 import traceback
 
 """Generic functionality useful for a game moderating IRC bot."""
@@ -93,7 +91,7 @@ class GameBot(SingleServerIRCBot):
                         e.arguments())
             SingleServerIRCBot._dispatcher(self, c, e)
         except:
-            self.say_public('Oh no, someone made a boo boo!')
+            self.say_public(_('Oh no, someone made a boo boo!'))
             traceback.print_exc()
   
     def on_nicknameinuse(self, c, e):
@@ -103,9 +101,7 @@ class GameBot(SingleServerIRCBot):
         nick = nm_to_n(e.source())
         self.members_in_room.append(nick)
         if nick == c.get_nickname():
-            chan = e.target()
             self.connection.mode(self.channel, '')
-
   
     def on_channelmodeis(self, c, e):
         c._handle_event(
@@ -162,20 +158,6 @@ class GameBot(SingleServerIRCBot):
             self.connection.mode(self.channel, '-m')
         elif not is_moderated and should_be_moderated:
             self.connection.mode(self.channel, '+m')
-    
-        # if should_be_moderated:
-        #     voice = []
-        #     devoice = []
-        #     for user in chobj.users():
-        #         is_live = user in self.players
-        #         is_voiced = chobj.is_voiced(user)
-        #         if is_live and not is_voiced:
-        #            voice.append(user)
-        #         elif not is_live and is_voiced:
-        #           devoice.append(user)
-            
-        #     self.multimode('+v', voice)
-        #     self.multimode('-v', devoice)
   
     def multimode(self, mode, nicks):
         max_batch = 4 # FIXME: Get this from features message
@@ -253,44 +235,3 @@ class GameBot(SingleServerIRCBot):
             if user.upper() == nick.upper():
                 return user
         return None
-
-def main():
-    import optparse
-
-    parser = optparse.OptionParser(description='IRC bot to moderate games of Resistance.')
-    parser.add_option('-d', '--debug', action='store_true', help='run the bot with debug info turned on')
-    parser.add_option('-c', '--config', help='optional config file for IRC info.', default=None)
-  
-    (options, args) = parser.parse_args()
-  
-    if options.config == None:
-        options.config = 'resistancebot.conf'
-    
-    import ConfigParser
-    c = ConfigParser.ConfigParser()
-    c.read(options.config)
-    
-    cfgsect = 'resistancebot'    
-    host = c.get(cfgsect, 'host')
-    channel = c.get(cfgsect, 'channel')
-    nickname = c.get(cfgsect, 'nickname')
-    nickpass = c.get(cfgsect, 'nickpass')
-  
-    s = string.split(host, ":", 1)
-    server = s[0]
-    port = default_port
-    if len(s) == 2:
-      try:
-          port = int(s[1])
-      except ValueError:
-          print "Error: Erroneous port."
-          sys.exit(1)        
-    
-    bot = GameIRCBot(channel, nickname, nickpass, server, port, options.debug)
-
-
-if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print "Caught Ctrl-C during initialization."

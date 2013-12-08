@@ -5,3 +5,4 @@ nickname = 'resbot'
 nickpass = ''
 moderation = False
 debug = True
+localization_filename = None

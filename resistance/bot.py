@@ -18,14 +18,10 @@
 # which itself is based on example bot and irc-bot class from
 # Joel Rosdahl <joel@rosdahl.net>, author of included python-irclib.
 
-import sys, string, random, time, os.path
 from irclib.gamebot import GameBot
 from irclib.irclib import nm_to_n
 from game import ResistanceGame
 import settings
-import random
-from random import choice
-
 
 class ResistanceBot(GameBot):    
     def __init__(self, channel, nickname, nickpass, server, port=settings.default_port, debug=False, moderation=True):
@@ -48,11 +44,10 @@ class ResistanceBot(GameBot):
 
     def end_game(self, game_ender):
         if self.game.state == self.game.GAMESTATE_NONE:
-            self.say_public("No game is in progress.  Use 'start' to begin a game.")
+            self.say_public(_("No game is in progress.  Use 'start' to begin a game."))
         elif self.game_starter and game_ender != self.game_starter:
-            self.say_public(\
-                        ("Sorry, only the starter of the game (%s) may end it." %\
-                        self.game_starter))
+            self.say_public(
+                (_("Sorry, only the starter of the game (%s) may end it.") % self.game_starter))
         else:
             self.game.end()
             self.fix_modes()
@@ -60,18 +55,18 @@ class ResistanceBot(GameBot):
     def handle_nonplayers(self, e):
         player = nm_to_n(e.source())
         if player not in self.game.players:
-            self.reply(e, "Hush, you're not playing this game.")
+            self.reply(e, _("Hush, you're not playing this game."))
             return False
         return True
 
     def cmd_team(self, args, e):
         if self.game.cur_phase != "ChooseTeam":
-            self.reply(e, "Now isn't the time for choosing a mission team. We'll tell you when we've found a target.")
+            self.reply(e, _("Now isn't the time for choosing a mission team. We'll tell you when we've found a target."))
             return
         
         player = nm_to_n(e.source())
         if player != self.game.leader:
-            self.reply(e, "Only the leader can decide who is on the mission team.")
+            self.reply(e, _("Only the leader can decide who is on the mission team."))
             return
         
         if not self.handle_nonplayers(e):
@@ -99,7 +94,7 @@ class ResistanceBot(GameBot):
     
     def cmd_unvote(self, args, e):
         if self.game.cur_phase != "Vote":
-            self.reply(e, "No election is currently being held.")
+            self.reply(e, _("No election is currently being held."))
             return
         
         if not self.handle_nonplayers(e):
@@ -119,7 +114,7 @@ class ResistanceBot(GameBot):
         
     def cmd_accept(self, args, e):
         if self.game.cur_phase != "Vote":
-            self.reply(e, "No election is currently being held.")
+            self.reply(e, _("No election is currently being held."))
             return
         
         if not self.handle_nonplayers(e):
@@ -130,7 +125,7 @@ class ResistanceBot(GameBot):
         
     def cmd_decline(self, args, e):
         if self.game.cur_phase != "Vote":
-            self.reply(e, "No election is currently being held.")
+            self.reply(e, _("No election is currently being held."))
             return
         
         if not self.handle_nonplayers(e):
@@ -142,23 +137,23 @@ class ResistanceBot(GameBot):
     def cmd_sabotage(self, args, e):
         player = nm_to_n(e.source())
         if self.game.state != self.game.GAMESTATE_RUNNING:
-            self.reply(e, "You cannot sabotage before the game starts!")
+            self.reply(e, _("You cannot sabotage before the game starts!"))
             return
 
         if player not in self.game.mission_team:
-            self.reply(e, "You're not on any mission team!")
+            self.reply(e, _("You're not on any mission team!"))
             return
         
         if self.game.cur_phase != "Mission":
-            self.reply(e, "Hold your horses, the mission hasn't started yet.")
+            self.reply(e, _("Hold your horses, the mission hasn't started yet."))
             return
             
         if e.eventtype() == "pubmsg":
-            self.reply(e, "You cannot public finish a mission!  Send me your choice in private.")
+            self.reply(e, _("You cannot public finish a mission!  Send me your choice in private."))
             return
                 
         if player not in self.game.spies:
-            self.reply(e, "You can't sabotage that.")
+            self.reply(e, _("You can't sabotage that."))
             return
         
         self.game.on_mission(e, player, False)
@@ -166,42 +161,42 @@ class ResistanceBot(GameBot):
     def cmd_finish(self, args, e):
         player = nm_to_n(e.source())
         if self.game.state != self.game.GAMESTATE_RUNNING:
-            self.reply(e, "You cannot sabotage before the game starts!")
+            self.reply(e, _("You cannot sabotage before the game starts!"))
             return
         
         if player not in self.game.mission_team:
-            self.reply(e, "You're not on any mission team!")
+            self.reply(e, _("You're not on any mission team!"))
             return
         
         if self.game.cur_phase != "Mission":
-            self.reply(e, "Hold your horses, the mission hasn't started yet.")
+            self.reply(e, _("Hold your horses, the mission hasn't started yet."))
             return
             
         if e.eventtype() == "pubmsg":
-            self.reply(e, "You cannot public finish a mission!  Send me your choice in private.")
+            self.reply(e, _("You cannot public finish a mission!  Send me your choice in private."))
             return
         
         self.game.on_mission(e, player, True)
     
     def cmd_help(self, args, e):
         cmds = [i[4:] for i in dir(self) if i.startswith('cmd_')]
-        self.reply(e, "Valid commands: '%s'" % "', '".join(cmds))
+        self.reply(e, _("Valid commands: '%s'") % "', '".join(cmds))
 
     def cmd_slap(self, args, e):
         if args[0] == "all":
             slapped_players = [m for m in self.members_in_room if m != self.desired_nickname and m != nm_to_n(e.source())]
             for slapped in slapped_players:
-                self.reply(e, "You slap " + member + " around a bit with a large trout.")
+                self.reply(e, _("You slap %s around a bit with a large trout.") % member)
         else:
-            self.reply(e, "You slap " + args[0] + " around a bit with a large trout.")
+            self.reply(e, _("You slap %s around a bit with a large trout.") % args[0])
   
     def cmd_stats(self, args, e):
         if self.game.state == self.game.GAMESTATE_RUNNING:
             self.game.print_stats()
         elif self.game.state == self.game.GAMESTATE_STARTING:
-            self.reply(e, "A new game is starting, current players are %s" % (self.game.players,))
+            self.reply(e, "_(A new game is starting, current players are %s") % self.game.players
         else:
-            self.reply(e, "No game is in progress.")
+            self.reply(e, _("No game is in progress."))
   
     def cmd_status(self, args, e):
         self.cmd_stats(args, e)
@@ -210,13 +205,13 @@ class ResistanceBot(GameBot):
         if self.game.state == self.game.GAMESTATE_RUNNING:
             self.game.print_score()
         else:
-            self.reply(e, "No game is in progress.")
+            self.reply(e, _("No game is in progress."))
 
     def cmd_votes(self, args, e):
         if self.game.state == self.game.GAMESTATE_RUNNING and self.game.cur_phase == "Vote":
             self.game.print_votes()
         else:
-            self.reply(e, "No election is currently being held.")
+            self.reply(e, _("No election is currently being held."))
   
     def cmd_start(self, args, e):
         "Initialize a resistance game."
@@ -224,8 +219,8 @@ class ResistanceBot(GameBot):
         chname, chobj = self.channels.items()[0]
 
         if self.game.state == self.game.GAMESTATE_RUNNING:
-            self.say_public("A game started by %s is in progress; "
-            "that person must end it." % self.game_starter)
+            self.say_public(_("A game started by %s is in progress; "
+            "that person must end it.") % self.game_starter)
         
         elif self.game.state == self.game.GAMESTATE_NONE:
             self.game.reset_game()
@@ -234,24 +229,24 @@ class ResistanceBot(GameBot):
             self.game_starter_last_seen = time.time()
             self.game.players.append(game_starter)
 
-            self.say_public("A new game has been started by %s; "
-                "say '%s: join' to join the game."
+            self.say_public(_("A new game has been started by %s; "
+                "say '%s: join' to join the game.")
                 % (self.game_starter, self.connection.get_nickname()))
-            self.say_public("%s: Say '%s: start' when everyone has joined."
+            self.say_public(_("%s: Say '%s: start' when everyone has joined.")
                 % (self.game_starter, self.connection.get_nickname()))
             self.fix_modes()
 
         elif self.game.state == self.game.GAMESTATE_STARTING:
             if self.game_starter and game_starter != self.game_starter:
-                self.say_public("Game startup was begun by %s; "
-                "that person must finish starting it." % self.game_starter)
+                self.say_public(_("Game startup was begun by %s; "
+                "that person must finish starting it.") % self.game_starter)
                 return
       
             self.game_starter = game_starter
             self.game_starter_last_seen = time.time()
 
             if len(self.game.players) < settings.min_users:
-                self.say_public("Sorry, to start a game, there must be at least active %d players." % (settings.min_users))
+                self.say_public(_("Sorry, to start a game, there must be at least active %d players.") % (settings.min_users))
             else:
                 self.fix_modes()
                 self.game.start()
@@ -265,46 +260,46 @@ class ResistanceBot(GameBot):
             return
       
         if self.game.state == self.game.GAMESTATE_RUNNING:
-            self.reply(e, 'Game is in progress; please wait for the next game.')
+            self.reply(e, _('Game is in progress; please wait for the next game.'))
             return
       
         player = nm_to_n(e.source())
         if player in self.game.players:
-            self.reply(e, 'You are already in the game.')
+            self.reply(e, _('You are already in the game.'))
         elif len(self.game.players) >= 10:
-            self.reply(e, 'Only 10 players are allowed to play. You\'ll have to wait')
+            self.reply(e, _('Only 10 players are allowed to play. You\'ll have to wait'))
         else:
             self.game.players.append(player)
 
-            self.reply(e, 'You are now in the game.')
+            self.reply(e, _('You are now in the game.'))
             self.fix_modes()
   
     def cmd_bring(self, args, e):        
         if self.game.state == self.game.GAMESTATE_RUNNING:
-            self.reply(e, 'You can\'t bring someone into a game that\'s in progress!')
+            self.reply(e, _('You can\'t bring someone into a game that\'s in progress!'))
             return
       
         player = nm_to_n(e.source())
         if player not in self.game.players:
-            self.reply(e, 'You can\'t bring someone into a game that you haven\'t even joined!')
+            self.reply(e, _('You can\'t bring someone into a game that you haven\'t even joined!'))
             return
         
         # Get the player that they're trying to bring:
         if len(args) != 1:
-            self.reply(e, 'Usage: bring <nick>')
+            self.reply(e, _('Usage: bring <nick>'))
             return
         
         if args[0] in self.game.players:
-            self.reply(e, 'That player is are already in the game.')
+            self.reply(e, _('That player is are already in the game.'))
         elif len(self.game.players) >= 10:
-            self.reply(e, 'Only 10 players are allowed to play. You\'ll have to wait')
+            self.reply(e, _('Only 10 players are allowed to play. You\'ll have to wait'))
         elif args[0] not in self.members_in_room:
-            self.reply(e, 'You can\'t bring someone who isn\'t in the room!')
+            self.reply(e, _('You can\'t bring someone who isn\'t in the room!'))
             return
         else:
             self.game.players.append(args[0])
 
-            self.reply(e, 'Nice job, you just brought ' + args[0] + ' into the game, even though they\'re probably AFK.')
+            self.reply(e, _('Nice job, you just brought %s into the game, even though they\'re probably AFK.') % args[0])
             self.fix_modes()
     
     # TODO
@@ -410,107 +405,107 @@ class ResistanceBot(GameBot):
     def cmd_del(self, args, e):
         for nick in args:
             if nick not in self.game.players:
-                self.reply(e, "There's nobody playing by the name %s" % nick)
+                self.reply(e, _("There's nobody playing by the name %s") % nick)
             self._removeUser(nick)
   
     def cmd_renick(self, args, e):
         if len(args) != 1:
-            self.reply(e, "Usage: renick <nick>")
+            self.reply(e, _("Usage: renick <nick>"))
         else:
             self.connection.nick(args[0])
   
     def cmd_aboutbot(self, args, e):
-        self.reply(e, "I am a bot written in Python "
-            "using the python-irclib library")
+        self.reply(e, _("I am a bot written in Python "
+            "using the python-irclib library"))
 
     def cmd_blind(self, args, e):
         if len(args) != 1:
             if self.game.blind_spies:
-                self.reply(e, "Spies are currently blind.")
+                self.reply(e, _("Spies are currently blind."))
             else:
-                self.reply(e, "Spies are currently not blind.")
+                self.reply(e, _("Spies are currently not blind."))
         elif self.game.state == self.game.GAMESTATE_RUNNING:
-            self.reply(e, "You can't toggle blind spies during a game!")
+            self.reply(e, _("You can't toggle blind spies during a game!"))
             return
         elif args[0] == 'on':
-            self.reply(e, "Blinding spies.")
+            self.reply(e, _("Blinding spies."))
             self.game.blind_spies = True
         elif args[0] == 'off':
-            self.reply(e, "Unblinding spies.")
+            self.reply(e, _("Unblinding spies."))
             self.game.blind_spies = False
             if self.game.instawin == True:
-                self.reply(e, "You cannot have blind turned off while instawin is on.")
-                self.reply(e, "Turning off instawin mode.")
+                self.reply(e, _("You cannot have blind turned off while instawin is on."))
+                self.reply(e, _("Turning off instawin mode."))
                 self.game.instawin = False
         else:
-            self.reply(e, "Usage: blind on|off")
+            self.reply(e, _("Usage: blind on|off"))
             
     def cmd_ranked(self, args, e):
         if len(args) != 1:
             if self.game.ranked:
-                self.reply(e, "Game mode is currently set to ranked.")
+                self.reply(e, _("Game mode is currently set to ranked."))
             else:
-                self.reply(e, "Game mode is currently set to unranked.")
+                self.reply(e, _("Game mode is currently set to unranked."))
         elif self.game.state == self.game.GAMESTATE_RUNNING:
-            self.reply(e, "You can't toggle game ranking during a game!")
+            self.reply(e, _("You can't toggle game ranking during a game!"))
             return
         elif args[0] == 'on':
-            self.reply(e, "Turning on ranked mode.")
+            self.reply(e, _("Turning on ranked mode."))
             self.game.ranked = True
         elif args[0] == 'off':
-            self.reply(e, "Turning on unranked mode.")
+            self.reply(e, _("Turning on unranked mode."))
             self.game.ranked = False
         else:
-            self.reply(e, "Usage: ranked on|off")
+            self.reply(e, _("Usage: ranked on|off"))
             
     def cmd_instawin(self, args, e):
         if len(args) != 1:
             if self.game.instawin:
-                self.reply(e, "Instawin is currently set to on for 5 man games.  When there are two spies on a team and only one of them sabotages, the spies will automatically win.")
+                self.reply(e, _("Instawin is currently set to on for 5 man games.  When there are two spies on a team and only one of them sabotages, the spies will automatically win."))
             else:
-                self.reply(e, "Instawin is currently set to off.")
+                self.reply(e, _("Instawin is currently set to off."))
         elif self.game.state == self.game.GAMESTATE_RUNNING:
-            self.reply(e, "You can't toggle instawin mode during a game!")
+            self.reply(e, _("You can't toggle instawin mode during a game!"))
             return
         elif args[0] == 'on':
-            self.reply(e, "Turning on instawin mode. When there are two spies on a team and only one of them sabotages, the spies will automatically win.")
+            self.reply(e, _("Turning on instawin mode. When there are two spies on a team and only one of them sabotages, the spies will automatically win."))
             self.game.instawin = True
             if self.game.blind_spies == False:
-                self.reply(e, "You cannot have instawin turned off while spies are not blind.")
-                self.reply(e, "Blinding spies.")
+                self.reply(e, _("You cannot have instawin turned off while spies are not blind."))
+                self.reply(e, _("Blinding spies."))
                 self.game.blind_spies = True
         elif args[0] == 'off':
-            self.reply(e, "Turning off instawin mode.")
+            self.reply(e, _("Turning off instawin mode."))
             self.game.instawin = False
         else:
-            self.reply(e, "Usage: instawin on|off")
+            self.reply(e, _("Usage: instawin on|off"))
 
     def cmd_settings(self, args, e):
         if len(args) != 1:
-            stringify = lambda start, on: start + "On\n" if on else "Off\n"
+            stringify = lambda on: _("On\n") if on else _("Off\n")
 
-            self.say_public(stringify("Blind: ", self.game.blind_spies))
-            self.say_public(stringify("Instawin: ", self.game.instawin))
-            self.say_public(stringify("Ranked: ", self.game.ranked))
+            self.say_public(_("Blind: %s") % stringify(self.game.blind_spies))
+            self.say_public(_("Instawin: %s") % stringify(self.game.instawin))
+            self.say_public(_("Ranked: %s") % stringify(self.game.ranked))
         else:
-            self.reply(e, "Usage: settings on|off")
+            self.reply(e, _("Usage: settings on|off"))
              
     def cmd_moderation(self, args, e):
         if self.game_starter and self.game_starter != nm_to_n(e.source()):
-            self.reply(e, "%s started the game, and so has administrative control. "
-            "Request denied." % self.game_starter)
+            self.reply(e, _("%s started the game, and so has administrative control. "
+            "Request denied.") % self.game_starter)
             return
         if len(args) != 1:
-            self.reply(e, "Usage: moderation on|off")
+            self.reply(e, _("Usage: moderation on|off"))
             return
         if args[0] == 'on':
             self.moderation = True
         elif args[0] == 'off':
             self.moderation = False
         else:
-            self.reply(e, "Usage: moderation on|off")
+            self.reply(e, _("Usage: moderation on|off"))
             return
-        self.say_public('Moderation turned %s by %s'
+        self.say_public(_('Moderation turned %s by %s')
             % (args[0], nm_to_n(e.source())))
         self.fix_modes()
   
@@ -541,4 +536,4 @@ class ResistanceBot(GameBot):
     
         # unknown command:  respond appropriately.
         # reply either to public channel, or to person who /msg'd
-        self.reply(e, "That command makes no sense.")
+        self.reply(e, _("That command makes no sense."))

@@ -20,9 +20,9 @@
 # which itself is based on example bot and irc-bot class from
 # Joel Rosdahl <joel@rosdahl.net>, author of included python-irclib.
 #
-import sys, string, random, time, os.path
-from random import choice
+from random import choice, randrange
 from mission import mission_fiction
+import datetime
 import settings
 from stats import Session, Player, Game
 
@@ -90,7 +90,7 @@ class ResistanceGame:
             return
 
         if nick in self.players:
-            self.messenger.say_public("%s disappeared in some sort of strange wormhole." % nick)
+            self.messenger.say_public(_("%s disappeared in some sort of strange wormhole.") % nick)
             self.players.remove(nick)
         
         if self.state == self.GAMESTATE_STARTING:
@@ -99,12 +99,12 @@ class ResistanceGame:
 
         if nick in self.spies:
             self.spies.remove(nick)
-            self.messenger.say_public("We've just received word that %s was an Imperial spy! They were summarily and messily executed." % nick)
+            self.messenger.say_public(_("We've just received word that %s was an Imperial spy! They were summarily and messily executed.") % nick)
             if len(self.spies) == 0:
                 self.end(self.game_starter)
                 return
         elif nick in self.players:
-            self.messenger.say_public("%s's loyalty is beyond doubt now. Of course, we had to torture them to death to discover that fact..." % nick)
+            self.messenger.say_public(_("%s's loyalty is beyond doubt now. Of course, we had to torture them to death to discover that fact...") % nick)
                   
         if nick in self.mission_team:
             self.mission_team.remove(nick)
@@ -142,7 +142,7 @@ class ResistanceGame:
             idx = 0
 
         while num_spies < total_spies[idx]:
-            self.spies.append(_players.pop(random.randrange(len(_players))))
+            self.spies.append(_players.pop(randrange(len(_players))))
             num_spies = num_spies + 1
         
         # Save off the original spies, in case one or more of them is deleted.
@@ -150,34 +150,32 @@ class ResistanceGame:
         
         self.leader = choice(self.players)
         
-        self.messenger.say_public("A new game of Resistance has started!")
+        self.messenger.say_public(_("A new game of Resistance has started!"))
 
         for spy in self.spies:
-          self.messenger.say_private(spy, "You're a sneaky Imperial spy.")
+          self.messenger.say_private(spy, _("You're a sneaky Imperial spy."))
         for player in _players:
-          self.messenger.say_private(player, "You're an upstanding member of the Resistance.")
+          self.messenger.say_private(player, _("You're an upstanding member of the Resistance."))
 
         if not self.blind_spies:
             # inform the spies of their comrades.
             for spy in self.spies:
                 other_spies = [x for x in self.spies if x != spy]
-                if len(other_spies) == 1:
-                    plurality = "spy is "
-                else:
-                    plurality = "spies are "
-                self.messenger.say_private(spy, "The other " + plurality + self.build_list_string(other_spies))
+                message = ungettext('The other spy is %(spy_list)s', 'The other spies are %(spy_list)s', 
+                    len(other_spies)) % {'spy_list': self.build_list_string(other_spies)}
+                self.messenger.say_private(spy, message)
         
         if self.debug:
-            print "SPIES: %s" % ' '.join(self.spies)
+            print _("SPIES: %s") % ' '.join(self.spies)
                 
         self.cur_phase = "ChooseTeam"
         self.phase[self.cur_phase]()    
 
     def end(self):
-        self.messenger.say_public("The game has ended.")
+        self.messenger.say_public(_("The game has ended."))
         if self.state == self.GAMESTATE_RUNNING:
-            self.messenger.say_public("*** The spies were %s. "
-                            "Everyone else was a member of the Resistance."
+            self.messenger.say_public(_("*** The spies were %s. "
+                            "Everyone else was a member of the Resistance.")
                             % self.build_list_string(self.original_spies))
             self.reset_game()
         
@@ -191,11 +189,11 @@ class ResistanceGame:
         self.mission_team = []    
         self.cur_team_size = self.calc_team_size()
         
-        self.messenger.say_public("\x033" + self.leader + "\x0f\x02\x02, you're the leader now.")
-        self.messenger.say_public("We've just received word " + mission_fiction() + " You should put together a team to take advantage of this opportunity!"\
-                        "\x032 " + str(self.cur_team_size) + "\x0f\x02\x02 operatives may go on this mission.")
+        self.messenger.say_public(_("\x033 %s \x0f\x02\x02, you're the leader now.") % self.leader)
+        self.messenger.say_public(mission_fiction() + " " + _("You should put together a team to take advantage of this opportunity!"\
+                        "\x032 %d \x0f\x02\x02 operatives may go on this mission.") % self.cur_team_size)
         
-        self.messenger.say_private(self.leader, "You're now the leader, and should put together your team.")
+        self.messenger.say_private(self.leader, _("You're now the leader, and should put together your team."))
         
     def calc_team_size(self):
         # Team size changes based on round and number of players.
@@ -206,10 +204,10 @@ class ResistanceGame:
         return mission_size[idx][self.cur_round]
     
     def begin_voting_phase(self):
-        msg = "As a group, we must now \x036Vote\x0f\x02\x02 on the proposed team. "\
-              "The team consists of " + self.build_list_string(self.mission_team) + ". "\
+        msg = _("As a group, we must now \x036Vote\x0f\x02\x02 on the proposed team. "\
+              "The team consists of %s. "\
               "You can either \x034accept\x0f\x02\x02 or \x034decline\x0f\x02\x02 this team. You can change your vote at any time "\
-              "but once all of the votes are in, the results are final."
+              "but once all of the votes are in, the results are final.") % self.build_list_string(self.mission_team)
         self.messenger.say_public(msg)
         self.votes = {}
           
@@ -218,7 +216,7 @@ class ResistanceGame:
             return True
         return False
     
-    def tally_votes(self):        
+    def tally_votes(self):
         votes = 0
         for v in self.votes.itervalues():
             if v == True:
@@ -231,14 +229,14 @@ class ResistanceGame:
     def begin_mission_phase(self):
         self.mission_votes = {}
         
-        self.messenger.say_public("The mission team consisting of " + self.build_list_string(self.mission_team) + " will now \x032commence their Mission\x0f\x02\x02")
+        self.messenger.say_public(_("The mission team consisting of %s will now \x032commence their Mission\x0f\x02\x02") % self.build_list_string(self.mission_team))
         
         for member in self.mission_team:
-            self.messenger.say_private(member, "You have been chosen to complete this daring and deadly mission!")
+            self.messenger.say_private(member, _("You have been chosen to complete this daring and deadly mission!"))
             if member in self.spies:
-                self.messenger.say_private(member, "You may choose to either \x034finish\x0f\x02\x02 or \x034sabotage\x0f\x02\x02 this mission.")
+                self.messenger.say_private(member, _("You may choose to either \x034finish\x0f\x02\x02 or \x034sabotage\x0f\x02\x02 this mission."))
             else:
-                self.messenger.say_private(member, "You must attempt to \x034finish\x0f\x02\x02 this mission.")
+                self.messenger.say_private(member, _("You must attempt to \x034finish\x0f\x02\x02 this mission."))
             
     def check_mission(self):
         if len(self.mission_votes) >= len(self.mission_team):
@@ -258,10 +256,10 @@ class ResistanceGame:
 		          spy_count = spy_count + 1
         
         if sabotages > 0:
-            self.messenger.say_public("The mission was sabotaged by " + str(sabotages) + " operatives!")
+            self.messenger.say_public(_("The mission was sabotaged by %s operatives!") % str(sabotages))
             self.spy_rounds = self.spy_rounds + 1
         else:
-            self.messenger.say_public("The mission was a success!")
+            self.messenger.say_public(_("The mission was a success!"))
             self.resistance_rounds = self.resistance_rounds + 1
         
         self.cur_round = self.cur_round + 1
@@ -270,7 +268,7 @@ class ResistanceGame:
         if self.check_game_over():
             self.end()
      	elif spy_count > 1 and len(self.players) == 5:
-     	    self.messenger.say_public("There were two sneaky spies on that mission, and only 1 sabotaged. The spies instantly win!")
+     	    self.messenger.say_public(_("There were two sneaky spies on that mission, and only 1 sabotaged. The spies instantly win!"))
             self.record_stats(True)
     	    if self.ranked:
                 self.recordoverallempirewin()
@@ -287,10 +285,10 @@ class ResistanceGame:
     def check_game_over(self):
         game_over = False
         if self.resistance_rounds >= 3:
-            self.messenger.say_public('\x034The Resistance\x0f\x02\x02 has successfully \x034destroyed\x0f\x02\x02 the Empire!')
+            self.messenger.say_public(_('\x034The Resistance\x0f\x02\x02 has successfully \x034destroyed\x0f\x02\x02 the Empire!'))
             game_over = True
         elif self.spy_rounds >= 3:
-            self.messenger.say_public('The \x034Imperial Spies\x0f\x02\x02 have successfully \x034sabotaged\x0f\x02\x02 the Resistance!')
+            self.messenger.say_public(_('The \x034Imperial Spies\x0f\x02\x02 have successfully \x034sabotaged\x0f\x02\x02 the Resistance!'))
             game_over = True
 
         if game_over and self.ranked:
@@ -299,46 +297,44 @@ class ResistanceGame:
         return game_over
         
     def print_score(self):
-        self.messenger.say_public("Score on Mission " + str(self.cur_round) + ":")
-        self.messenger.say_public("Resistance: " + str(self.resistance_rounds) + "/3")
-        self.messenger.say_public("Spies: " + str(self.spy_rounds) + "/3")
+        self.messenger.say_public(_("Score on Mission %d:") % self.cur_round)
+        self.messenger.say_public(_("Resistance: %d/3") % self.resistance_rounds)
+        self.messenger.say_public(_("Spies: %d/3") % self.spy_rounds)
 
     def print_votes(self):
         voters = [key for key in self.votes.iterkeys()]
         if len(voters) == 0:
-            msg = "No players have voted yet."
+            msg = _("No players have voted yet.")
         else:
-            msg = "The following players have voted: " \
-              + self.build_list_string(voters)
+            msg = _("The following players have voted: %s") % self.build_list_string(voters)
             
         self.messenger.say_public(msg)
         
     def print_stats(self):
         """ Prints stats that are relevant to the current phase """
-        msg = ""
-        msg += "The current phase is "
         if self.cur_phase == "ChooseTeam":
-            msg += "\x033Team Building"
+            msg = _("The current phase is \x033Team Building")
         elif self.cur_phase == "Vote":
-            msg += "\x036Voting"
+            msg = _("The current phase is \x036Voting")
         elif self.cur_phase == "Mission":
-            msg += "\x032Mission Duty"
+            msg = _("The current phase is \x032Mission Duty")
             
         self.messenger.say_public(msg)
         
-        self.messenger.say_public("The current leader is \x034" + self.leader)
-        self.messenger.say_public("Game order is " + ' '.join(self.players))
-        self.messenger.say_public("It's been \x034 " + str(self.no_vote_rounds) + " \x0f\x02\x02no vote rounds since the last mission.")
+        self.messenger.say_public(_("The current leader is \x034%s") % self.leader)
+        self.messenger.say_public(_("Game order is %s") % ' '.join(self.players))
+        self.messenger.say_public(_("It's been \x034 %d\x0f\x02\x02no vote rounds since the last mission.") % self.no_vote_rounds)
         
         if len(self.mission_team) > 0:
-            self.messenger.say_public("The mission team consists of " + self.build_list_string(self.mission_team))
+            self.messenger.say_public(_("The mission team consists of %s") % self.build_list_string(self.mission_team))
             
         if self.cur_phase == "ChooseTeam":
-            self.messenger.say_public("The team needs to have " + str(self.cur_team_size) + " members.")
+            self.messenger.say_public(_("The team needs to have %d members.") % self.cur_team_size)
         
         if self.cur_phase == "Vote":
             self.print_votes()
     
+    # TODO
     def build_list_string(self, list):
         if len(list) == 0:
             return "no one"
@@ -349,21 +345,21 @@ class ResistanceGame:
         
     def on_team_choice(self, e, member, add):
         if member not in self.players:
-            self.messenger.reply(e, "You can't add someone who isn't even playing!")
+            self.messenger.reply(e, _("You can't add someone who isn't even playing!"))
             return
         
         if add:
             if member in self.mission_team:
-                self.messenger.reply(e, "You can't add someone who is already in the team!")
+                self.messenger.reply(e, _("You can't add someone who is already in the team!"))
             else:
-                self.messenger.reply(e, "Added %s to the mission team" % member)
+                self.messenger.reply(e, _("Added %s to the mission team") % member)
                 self.mission_team.append(member)
         else:
             if member in self.mission_team:
                 self.mission_team.remove(member)
-                self.messenger.reply(e, "Removed %s from the mission team" % member)
+                self.messenger.reply(e, _("Removed %s from the mission team") % member)
             else:
-                self.messenger.reply(e, "They're not on the mission team.")
+                self.messenger.reply(e, _("They're not on the mission team."))
                 
         if len(self.mission_team) >= self.cur_team_size:
             # Finished picking the team
@@ -372,44 +368,44 @@ class ResistanceGame:
             
     def on_vote(self, e, player, vote):
         self.votes[player] = vote            
-        self.messenger.reply(e, "Your vote has been tallied.")
+        self.messenger.reply(e, _("Your vote has been tallied."))
                 
         if self.check_votes():
             t = self.tally_votes()
             for_team = [k for k,v in self.votes.iteritems() if v is True]
             against_team = [k for k,v in self.votes.iteritems() if v is False]
 
-            self.messenger.say_public(self.build_list_string(for_team) + " voted \x033for the team\x0f\x02\x02 and")
-            self.messenger.say_public(self.build_list_string(against_team) + " voted \x034against the team\x0f\x02\x02.")
+            self.messenger.say_public(_("%s voted \x033for the team\x0f\x02\x02 and") % self.build_list_string(for_team))
+            self.messenger.say_public(_("%s voted \x034against the team\x0f\x02\x02.") % self.build_list_string(against_team))
             
             if t:
                 self.no_vote_rounds = 0
                 self.cur_phase = "Mission"
-                self.messenger.say_public("Therefore, the mission team was \x033accepted!\x0f\x02\x02")
+                self.messenger.say_public(_("Therefore, the mission team was \x033accepted!\x0f\x02\x02"))
             else:
                 self.no_vote_rounds = self.no_vote_rounds + 1
                 if self.no_vote_rounds >= 5:
                     self.spy_rounds = 3
-                    self.messenger.say_public("Unfortunately, you all spent so much time bickering, that the Empire discovered your based and destroyed you all.")
+                    self.messenger.say_public(_("Unfortunately, you all spent so much time bickering, that the Empire discovered your based and destroyed you all."))
                     if self.check_game_over():
                         self.end()
                         return
 
                 self.cur_phase = "ChooseTeam"
-                self.messenger.say_public("Therefore, the mission team was \x034not accepted!\x0f\x02\x02")
+                self.messenger.say_public(_("Therefore, the mission team was \x034not accepted!\x0f\x02\x02"))
             
             self.phase[self.cur_phase]()
             
     def on_unvote(self, e, player):
         if player in self.votes.keys():
             del self.votes[player]
-            self.messenger.reply(e, "Your vote has been retracted.")
+            self.messenger.reply(e, _("Your vote has been retracted."))
         else:
-            self.messenger.reply(e, "You haven't voted yet.")
+            self.messenger.reply(e, _("You haven't voted yet."))
     
     def on_mission(self, e, player, action):
         self.mission_votes[player] = action
-        self.messenger.reply(e, "Your contribution to the mission is acknowledged.")
+        self.messenger.reply(e, _("Your contribution to the mission is acknowledged."))
         
         if self.check_mission():
             self.mission_results()
@@ -417,7 +413,6 @@ class ResistanceGame:
     def write_stats(self, spies_won):
         session = Session()
 
-        # First, write the game:
         game = Game(num_players=len(self.players), date=datetime.datetime.utcnow(), resistance_rounds=self.resistance_rounds, spy_rounds=self.spy_rounds)
 
         for player_name in self.players:
@@ -428,14 +423,18 @@ class ResistanceGame:
             if player in self.spies:
                 if spies_won:
                     player.spy_wins = player.spy_wins + 1
+                    player.total_wins = player.total_wins + 1
                 else:
                     player.spy_losses = player.spy_losses + 1
             else:
                 if not spies_won: 
                     player.resistance_wins = player.resistance_wins + 1
+                    player.total_wins = player.total_wins + 1
                 else:
                     player.resistance_losses = player.resistance_losses + 1
 
+            player.total_games = player.total_games + 1
+            player.win_percent = player.total_wins / player.total_games
             game.players.append(player)
             session.add(player)
 
