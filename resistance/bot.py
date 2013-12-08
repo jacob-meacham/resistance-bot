@@ -22,8 +22,9 @@ from irclib.gamebot import GameBot
 from irclib.irclib import nm_to_n
 from game import ResistanceGame
 import settings
+import time
 
-class ResistanceBot(GameBot):    
+class ResistanceBot(GameBot):
     def __init__(self, channel, nickname, nickpass, server, port=settings.default_port, debug=False, moderation=True):
         self.game = ResistanceGame(self)
         self.game_starter = None
@@ -183,10 +184,12 @@ class ResistanceBot(GameBot):
         self.reply(e, _("Valid commands: '%s'") % "', '".join(cmds))
 
     def cmd_slap(self, args, e):
+        if len(args) < 1:
+            self.reply(e, _("You slap yourself around a but with a large trout."))
         if args[0] == "all":
             slapped_players = [m for m in self.members_in_room if m != self.desired_nickname and m != nm_to_n(e.source())]
             for slapped in slapped_players:
-                self.reply(e, _("You slap %s around a bit with a large trout.") % member)
+                self.reply(e, _("You slap %s around a bit with a large trout.") % slapped)
         else:
             self.reply(e, _("You slap %s around a bit with a large trout.") % args[0])
   

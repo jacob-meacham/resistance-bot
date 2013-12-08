@@ -50,7 +50,7 @@ def init_localization(localization_filename):
     logging.debug('Using default messages')
     trans = gettext.NullTranslations()
  
-  trans.install()
+  trans.install(names=['ngettext'])
   logging.debug('localization initialized!')
 
 def main():

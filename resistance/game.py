@@ -161,7 +161,7 @@ class ResistanceGame:
             # inform the spies of their comrades.
             for spy in self.spies:
                 other_spies = [x for x in self.spies if x != spy]
-                message = ungettext('The other spy is %(spy_list)s', 'The other spies are %(spy_list)s', 
+                message = ngettext('The other spy is %(spy_list)s', 'The other spies are %(spy_list)s', 
                     len(other_spies)) % {'spy_list': self.build_list_string(other_spies)}
                 self.messenger.say_private(spy, message)
         
@@ -322,7 +322,7 @@ class ResistanceGame:
         
         self.messenger.say_public(_("The current leader is \x034%s") % self.leader)
         self.messenger.say_public(_("Game order is %s") % ' '.join(self.players))
-        self.messenger.say_public(_("It's been \x034 %d\x0f\x02\x02no vote rounds since the last mission.") % self.no_vote_rounds)
+        self.messenger.say_public(_("It's been \x034 %d \x0f\x02\x02 vote rounds since the last mission.") % self.no_vote_rounds)
         
         if len(self.mission_team) > 0:
             self.messenger.say_public(_("The mission team consists of %s") % self.build_list_string(self.mission_team))
