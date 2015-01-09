@@ -19,7 +19,6 @@ class GenerateTestStats:
 			end_time=datetime.datetime.now())
 
 	def generate_test_players(self, num):
-		session = self.Session()
 		for x in xrange(num):
 			p = Player(name=str(x))
 			self.players.append(p)
@@ -53,9 +52,11 @@ class GenerateTestStats:
 
 				for res in resistance:
 					res.resistance_wins = res.resistance_wins + 1
+					res.total_wins = res.total_wins + 1
 			else:
 				for spy in spies:
 					spy.spy_wins = spy.spy_wins + 1
+					spy.total_wins = spy.total_wins + 1
 
 				for res in resistance:
 					res.resistance_wins = res.resistance_wins + 1
@@ -63,6 +64,8 @@ class GenerateTestStats:
 			# Add the players to the session, and then commit.
 			session.add(g)
 			for p in cur_players:
+				p.total_games = p.total_games + 1
+				p.win_percent = float(p.total_wins) / p.total_games
 				session.add(p)
 
 		session.commit()

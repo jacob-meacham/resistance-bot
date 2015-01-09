@@ -1,0 +1,564 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2013-12-07 19:38+Pacific Standard Time\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: irclib/gamebot.py:94
+msgid "Oh no, someone made a boo boo!"
+msgstr ""
+
+#: resistance/bot.py:47
+msgid "No game is in progress.  Use 'start' to begin a game."
+msgstr ""
+
+#: resistance/bot.py:50
+msgid "Sorry, only the starter of the game (%s) may end it."
+msgstr ""
+
+#: resistance/bot.py:58
+msgid "Hush, you're not playing this game."
+msgstr ""
+
+#: resistance/bot.py:64
+msgid "Now isn't the time for choosing a mission team. We'll tell you when we've found a target."
+msgstr ""
+
+#: resistance/bot.py:69
+msgid "Only the leader can decide who is on the mission team."
+msgstr ""
+
+#: resistance/bot.py:97 resistance/bot.py:117 resistance/bot.py:128
+#: resistance/bot.py:214
+msgid "No election is currently being held."
+msgstr ""
+
+#: resistance/bot.py:140 resistance/bot.py:164
+msgid "You cannot sabotage before the game starts!"
+msgstr ""
+
+#: resistance/bot.py:144 resistance/bot.py:168
+msgid "You're not on any mission team!"
+msgstr ""
+
+#: resistance/bot.py:148 resistance/bot.py:172
+msgid "Hold your horses, the mission hasn't started yet."
+msgstr ""
+
+#: resistance/bot.py:152 resistance/bot.py:176
+msgid "You cannot public finish a mission!  Send me your choice in private."
+msgstr ""
+
+#: resistance/bot.py:156
+msgid "You can't sabotage that."
+msgstr ""
+
+#: resistance/bot.py:183
+msgid "Valid commands: '%s'"
+msgstr ""
+
+#: resistance/bot.py:189 resistance/bot.py:191
+msgid "You slap %s around a bit with a large trout."
+msgstr ""
+
+#: resistance/bot.py:199 resistance/bot.py:208
+msgid "No game is in progress."
+msgstr ""
+
+#: resistance/bot.py:222
+msgid "A game started by %s is in progress; that person must end it."
+msgstr ""
+
+#: resistance/bot.py:232
+msgid "A new game has been started by %s; say '%s: join' to join the game."
+msgstr ""
+
+#: resistance/bot.py:235
+msgid "%s: Say '%s: start' when everyone has joined."
+msgstr ""
+
+#: resistance/bot.py:241
+msgid "Game startup was begun by %s; that person must finish starting it."
+msgstr ""
+
+#: resistance/bot.py:249
+msgid "Sorry, to start a game, there must be at least active %d players."
+msgstr ""
+
+#: resistance/bot.py:263
+msgid "Game is in progress; please wait for the next game."
+msgstr ""
+
+#: resistance/bot.py:268
+msgid "You are already in the game."
+msgstr ""
+
+#: resistance/bot.py:270 resistance/bot.py:295
+msgid "Only 10 players are allowed to play. You'll have to wait"
+msgstr ""
+
+#: resistance/bot.py:274
+msgid "You are now in the game."
+msgstr ""
+
+#: resistance/bot.py:279
+msgid "You can't bring someone into a game that's in progress!"
+msgstr ""
+
+#: resistance/bot.py:284
+msgid "You can't bring someone into a game that you haven't even joined!"
+msgstr ""
+
+#: resistance/bot.py:289
+msgid "Usage: bring <nick>"
+msgstr ""
+
+#: resistance/bot.py:293
+msgid "That player is are already in the game."
+msgstr ""
+
+#: resistance/bot.py:297
+msgid "You can't bring someone who isn't in the room!"
+msgstr ""
+
+#: resistance/bot.py:302
+msgid "Nice job, you just brought %s into the game, even though they're probably AFK."
+msgstr ""
+
+#: resistance/bot.py:408
+msgid "There's nobody playing by the name %s"
+msgstr ""
+
+#: resistance/bot.py:413
+msgid "Usage: renick <nick>"
+msgstr ""
+
+#: resistance/bot.py:418
+msgid "I am a bot written in Python using the python-irclib library"
+msgstr ""
+
+#: resistance/bot.py:424
+msgid "Spies are currently blind."
+msgstr ""
+
+#: resistance/bot.py:426
+msgid "Spies are currently not blind."
+msgstr ""
+
+#: resistance/bot.py:428
+msgid "You can't toggle blind spies during a game!"
+msgstr ""
+
+#: resistance/bot.py:431 resistance/bot.py:475
+msgid "Blinding spies."
+msgstr ""
+
+#: resistance/bot.py:434
+msgid "Unblinding spies."
+msgstr ""
+
+#: resistance/bot.py:437
+msgid "You cannot have blind turned off while instawin is on."
+msgstr ""
+
+#: resistance/bot.py:438 resistance/bot.py:478
+msgid "Turning off instawin mode."
+msgstr ""
+
+#: resistance/bot.py:441
+msgid "Usage: blind on|off"
+msgstr ""
+
+#: resistance/bot.py:446
+msgid "Game mode is currently set to ranked."
+msgstr ""
+
+#: resistance/bot.py:448
+msgid "Game mode is currently set to unranked."
+msgstr ""
+
+#: resistance/bot.py:450
+msgid "You can't toggle game ranking during a game!"
+msgstr ""
+
+#: resistance/bot.py:453
+msgid "Turning on ranked mode."
+msgstr ""
+
+#: resistance/bot.py:456
+msgid "Turning on unranked mode."
+msgstr ""
+
+#: resistance/bot.py:459
+msgid "Usage: ranked on|off"
+msgstr ""
+
+#: resistance/bot.py:464
+msgid "Instawin is currently set to on for 5 man games.  When there are two spies on a team and only one of them sabotages, the spies will automatically win."
+msgstr ""
+
+#: resistance/bot.py:466
+msgid "Instawin is currently set to off."
+msgstr ""
+
+#: resistance/bot.py:468
+msgid "You can't toggle instawin mode during a game!"
+msgstr ""
+
+#: resistance/bot.py:471
+msgid "Turning on instawin mode. When there are two spies on a team and only one of them sabotages, the spies will automatically win."
+msgstr ""
+
+#: resistance/bot.py:474
+msgid "You cannot have instawin turned off while spies are not blind."
+msgstr ""
+
+#: resistance/bot.py:481
+msgid "Usage: instawin on|off"
+msgstr ""
+
+#: resistance/bot.py:485
+msgid ""
+"Off\n"
+msgstr ""
+
+#: resistance/bot.py:485
+msgid ""
+"On\n"
+msgstr ""
+
+#: resistance/bot.py:487
+msgid "Blind: %s"
+msgstr ""
+
+#: resistance/bot.py:488
+msgid "Instawin: %s"
+msgstr ""
+
+#: resistance/bot.py:489
+msgid "Ranked: %s"
+msgstr ""
+
+#: resistance/bot.py:491
+msgid "Usage: settings on|off"
+msgstr ""
+
+#: resistance/bot.py:495
+msgid "%s started the game, and so has administrative control. Request denied."
+msgstr ""
+
+#: resistance/bot.py:499 resistance/bot.py:506
+msgid "Usage: moderation on|off"
+msgstr ""
+
+#: resistance/bot.py:508
+msgid "Moderation turned %s by %s"
+msgstr ""
+
+#: resistance/bot.py:539
+msgid "That command makes no sense."
+msgstr ""
+
+#: resistance/game.py:93
+msgid "%s disappeared in some sort of strange wormhole."
+msgstr ""
+
+#: resistance/game.py:102
+msgid "We've just received word that %s was an Imperial spy! They were summarily and messily executed."
+msgstr ""
+
+#: resistance/game.py:107
+msgid "%s's loyalty is beyond doubt now. Of course, we had to torture them to death to discover that fact..."
+msgstr ""
+
+#: resistance/game.py:153
+msgid "A new game of Resistance has started!"
+msgstr ""
+
+#: resistance/game.py:156
+msgid "You're a sneaky Imperial spy."
+msgstr ""
+
+#: resistance/game.py:158
+msgid "You're an upstanding member of the Resistance."
+msgstr ""
+
+#: resistance/game.py:168
+msgid "SPIES: %s"
+msgstr ""
+
+#: resistance/game.py:174
+msgid "The game has ended."
+msgstr ""
+
+#: resistance/game.py:176
+msgid "*** The spies were %s. Everyone else was a member of the Resistance."
+msgstr ""
+
+#: resistance/game.py:191
+msgid "\0033 %s \017\002\002, you're the leader now."
+msgstr ""
+
+#: resistance/game.py:192
+msgid "You should put together a team to take advantage of this opportunity!\0032 %d \017\002\002 operatives may go on this mission."
+msgstr ""
+
+#: resistance/game.py:195
+msgid "You're now the leader, and should put together your team."
+msgstr ""
+
+#: resistance/game.py:206
+msgid "As a group, we must now \0036Vote\017\002\002 on the proposed team. The team consists of %s. You can either \0034accept\017\002\002 or \0034decline\017\002\002 this team. You can change your vote at any time but once all of the votes are in, the results are final."
+msgstr ""
+
+#: resistance/game.py:231
+msgid "The mission team consisting of %s will now \0032commence their Mission\017\002\002"
+msgstr ""
+
+#: resistance/game.py:234
+msgid "You have been chosen to complete this daring and deadly mission!"
+msgstr ""
+
+#: resistance/game.py:236
+msgid "You may choose to either \0034finish\017\002\002 or \0034sabotage\017\002\002 this mission."
+msgstr ""
+
+#: resistance/game.py:238
+msgid "You must attempt to \0034finish\017\002\002 this mission."
+msgstr ""
+
+#: resistance/game.py:258
+msgid "The mission was sabotaged by %s operatives!"
+msgstr ""
+
+#: resistance/game.py:261
+msgid "The mission was a success!"
+msgstr ""
+
+#: resistance/game.py:270
+msgid "There were two sneaky spies on that mission, and only 1 sabotaged. The spies instantly win!"
+msgstr ""
+
+#: resistance/game.py:287
+msgid "\0034The Resistance\017\002\002 has successfully \0034destroyed\017\002\002 the Empire!"
+msgstr ""
+
+#: resistance/game.py:290
+msgid "The \0034Imperial Spies\017\002\002 have successfully \0034sabotaged\017\002\002 the Resistance!"
+msgstr ""
+
+#: resistance/game.py:299
+msgid "Score on Mission %d:"
+msgstr ""
+
+#: resistance/game.py:300
+msgid "Resistance: %d/3"
+msgstr ""
+
+#: resistance/game.py:301
+msgid "Spies: %d/3"
+msgstr ""
+
+#: resistance/game.py:306
+msgid "No players have voted yet."
+msgstr ""
+
+#: resistance/game.py:308
+msgid "The following players have voted: %s"
+msgstr ""
+
+#: resistance/game.py:315
+msgid "The current phase is \0033Team Building"
+msgstr ""
+
+#: resistance/game.py:317
+msgid "The current phase is \0036Voting"
+msgstr ""
+
+#: resistance/game.py:319
+msgid "The current phase is \0032Mission Duty"
+msgstr ""
+
+#: resistance/game.py:323
+msgid "The current leader is \0034%s"
+msgstr ""
+
+#: resistance/game.py:324
+msgid "Game order is %s"
+msgstr ""
+
+#: resistance/game.py:325
+msgid "It's been \0034 %d\017\002\002no vote rounds since the last mission."
+msgstr ""
+
+#: resistance/game.py:328
+msgid "The mission team consists of %s"
+msgstr ""
+
+#: resistance/game.py:331
+msgid "The team needs to have %d members."
+msgstr ""
+
+#: resistance/game.py:347
+msgid "You can't add someone who isn't even playing!"
+msgstr ""
+
+#: resistance/game.py:352
+msgid "You can't add someone who is already in the team!"
+msgstr ""
+
+#: resistance/game.py:354
+msgid "Added %s to the mission team"
+msgstr ""
+
+#: resistance/game.py:359
+msgid "Removed %s from the mission team"
+msgstr ""
+
+#: resistance/game.py:361
+msgid "They're not on the mission team."
+msgstr ""
+
+#: resistance/game.py:370
+msgid "Your vote has been tallied."
+msgstr ""
+
+#: resistance/game.py:377
+msgid "%s voted \0033for the team\017\002\002 and"
+msgstr ""
+
+#: resistance/game.py:378
+msgid "%s voted \0034against the team\017\002\002."
+msgstr ""
+
+#: resistance/game.py:383
+msgid "Therefore, the mission team was \0033accepted!\017\002\002"
+msgstr ""
+
+#: resistance/game.py:388
+msgid "Unfortunately, you all spent so much time bickering, that the Empire discovered your based and destroyed you all."
+msgstr ""
+
+#: resistance/game.py:394
+msgid "Therefore, the mission team was \0034not accepted!\017\002\002"
+msgstr ""
+
+#: resistance/game.py:401
+msgid "Your vote has been retracted."
+msgstr ""
+
+#: resistance/game.py:403
+msgid "You haven't voted yet."
+msgstr ""
+
+#: resistance/game.py:407
+msgid "Your contribution to the mission is acknowledged."
+msgstr ""
+
+#: resistance/mission.py:24
+msgid "We've just received word of an Imperial base with narcoleptic guards."
+msgstr ""
+
+#: resistance/mission.py:25
+msgid "We've just received word of a chance to steal the Emperor's prized %s."
+msgstr ""
+
+#: resistance/mission.py:25
+msgid "lager"
+msgstr ""
+
+#: resistance/mission.py:25
+msgid "pony"
+msgstr ""
+
+#: resistance/mission.py:25
+msgid "son"
+msgstr ""
+
+#: resistance/mission.py:25
+msgid "teddy bear"
+msgstr ""
+
+#: resistance/mission.py:25
+msgid "underwear"
+msgstr ""
+
+#: resistance/mission.py:26
+msgid "We've just received word of a nuclear power plant looking to recruit shady workers."
+msgstr ""
+
+#: resistance/mission.py:27
+msgid "March"
+msgstr ""
+
+#: resistance/mission.py:27
+msgid "We've just received word of a way to infiltrate a secret Imperial %s."
+msgstr ""
+
+#: resistance/mission.py:27
+msgid "base"
+msgstr ""
+
+#: resistance/mission.py:27
+msgid "karaoke party"
+msgstr ""
+
+#: resistance/mission.py:27
+msgid "mission"
+msgstr ""
+
+#: resistance/mission.py:27
+msgid "surprise party"
+msgstr ""
+
+#: resistance/mission.py:28
+msgid "Core FX 9000"
+msgstr ""
+
+#: resistance/mission.py:28
+msgid "Death Star"
+msgstr ""
+
+#: resistance/mission.py:28
+msgid "Hydroplant"
+msgstr ""
+
+#: resistance/mission.py:28
+msgid "We've just received word  of a %s which is not fully operational."
+msgstr ""
+
+#: resistance/mission.py:28
+msgid "karaoke bar"
+msgstr ""
+
+#: resistance/mission.py:28
+msgid "tractor"
+msgstr ""
+
+#: resistance/mission.py:29
+msgid "We've just received word of a high ranking Imperial official who is %s."
+msgstr ""
+
+#: resistance/mission.py:29
+msgid "balding"
+msgstr ""
+
+#: resistance/mission.py:29
+msgid "lactose intolerant"
+msgstr ""
+
+#: resistance/mission.py:29
+msgid "scared of heights"
+msgstr ""
+

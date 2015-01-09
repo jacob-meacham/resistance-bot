@@ -1,7 +1,11 @@
-host = 'irc.yojoe.local'
+import logging
+
+host = 'localhost'
 port = 6697
 channel = '#resistance'
 nickname = 'resbot'
 nickpass = ''
 moderation = False
-debug = True
+loglevel = logging.WARN
+debug = False
+localization_filename = None

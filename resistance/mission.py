@@ -21,11 +21,11 @@
 from random import choice
 
 def mission_fiction():
-    fiction = ["of an Imperial base with narcoleptic guards.",
-               "of a chance to steal the Emperor's prized " + choice(["underwear", "teddy bear", "pony", "son", "lager"]) + '.',
-               "of a nuclear power plant looking to recruit shady workers.",
-               "of a way to infiltrate a secret Imperial " + choice(["base", "mission", "karaoke party", "surprise party", "March"]) + '.',
-               "of a " + choice(["Death Star", "karaoke bar", "Hydroplant", "Core FX 9000", "tractor"]) + " which is not fully operational.",
-               "of a high ranking Imperial official who is " + choice(["lactose intolerant", "scared of heights", "balding", "Zac's brother"]) + '.'
+    fiction = [_("We've just received word of an Imperial base with narcoleptic guards."),
+               _("We've just received word of a chance to steal the Emperor's prized %s.") % choice([_("underwear"), _("teddy bear"), _("pony"), _("son"), _("lager")]),
+               _("We've just received word of a nuclear power plant looking to recruit shady workers."),
+               _("We've just received word of a way to infiltrate a secret Imperial %s.") % choice([_("base"), _("mission"), _("karaoke party"), _("surprise party"), _("March")]),
+               _("We've just received word  of a %s which is not fully operational.") % choice([_("Death Star"), _("karaoke bar"), _("Hydroplant"), _("Core FX 9000"), _("tractor")]),
+               _("We've just received word of a high ranking Imperial official who is %s.") % choice([_("lactose intolerant"), _("scared of heights"), _("balding")])
                ]
     return choice(fiction)

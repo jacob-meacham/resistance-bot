@@ -29,11 +29,33 @@ private messages and channel traffic.  Commands in channel messages
 are given by prefixing the text by the bot name followed by a colon."""
 
 from resistance.bot import ResistanceBot
-from resistance.game import ResistanceGame
 import config
+import gettext
+import locale
+import logging
+ 
+def init_localization(localization_filename):
+  if localization_filename is not None:
+    filename = localization_filename
+  else:
+    locale.setlocale(locale.LC_ALL, '') # use user's preferred locale
+
+    # take first two characters of country code
+    filename = "i18n/messages_%s.mo" % locale.getlocale()[0][0:2]
+  
+  try:
+    logging.debug('Opening message file %s' % filename)
+    trans = gettext.GNUTranslations(open(filename, "rb"))
+  except IOError:
+    logging.debug('Using default messages')
+    trans = gettext.NullTranslations()
+ 
+  trans.install(names=['ngettext'])
+  logging.debug('localization initialized!')
 
 def main():
-    bot = ResistanceBot(config.channel, config.nickname, config.nickpass, config.host, config.port, config.debug, moderation=config.moderation)
+    init_localization(config.localization_filename)
+    ResistanceBot(config.channel, config.nickname, config.nickpass, config.host, config.port, config.debug, moderation=config.moderation)
 
 if __name__ == "__main__":
     try:

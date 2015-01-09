@@ -19,7 +19,7 @@ class Player(Base):
 	name = Column(String(80))
 	win_percent = Column(Float)
 	total_wins = Column(Integer)
-	total_losses = Column(Integer)
+	total_games = Column(Integer)
 	spy_wins = Column(Integer)
 	spy_losses = Column(Integer)
 	resistance_wins = Column(Integer)
@@ -33,7 +33,7 @@ class Player(Base):
 		self.name = name
 		self.win_percent = 0.0
 		self.total_wins = 0
-		self.total_losses = 0
+		self.total_games = 0
 		self.spy_wins = 0
 		self.spy_losses = 0
 		self.resistance_wins = 0
@@ -47,4 +47,6 @@ class Game(Base):
 	date = Column(DateTime)
 	resistance_rounds = Column(Integer)
 	spy_rounds = Column(Integer)
+
+	spies = relationship('Player', backref= backref('games'), secondary=player_game_table, primaryjoin = "pages.publishing_user_id == users.id")
 

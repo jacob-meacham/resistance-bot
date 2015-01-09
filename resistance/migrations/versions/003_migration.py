@@ -9,7 +9,7 @@ player = Table('player', post_meta,
     Column('name', String(length=80)),
     Column('win_percent', Float),
     Column('total_wins', Integer),
-    Column('total_losses', Integer),
+    Column('total_games', Integer),
     Column('spy_wins', Integer),
     Column('spy_losses', Integer),
     Column('resistance_wins', Integer),
@@ -23,7 +23,7 @@ def upgrade(migrate_engine):
     pre_meta.bind = migrate_engine
     post_meta.bind = migrate_engine
     post_meta.tables['player'].columns['total_wins'].create()
-    post_meta.tables['player'].columns['total_losses'].create()
+    post_meta.tables['player'].columns['total_games'].create()
     post_meta.tables['player'].columns['win_percent'].create()
 
 
@@ -32,5 +32,5 @@ def downgrade(migrate_engine):
     pre_meta.bind = migrate_engine
     post_meta.bind = migrate_engine
     post_meta.tables['player'].columns['total_wins'].drop()
-    post_meta.tables['player'].columns['total_losses'].drop()
+    post_meta.tables['player'].columns['total_games'].drop()
     post_meta.tables['player'].columns['win_percent'].drop()

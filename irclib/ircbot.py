@@ -28,7 +28,7 @@ import sys
 from UserDict import UserDict
 
 from irclib import SimpleIRCClient
-from irclib import nm_to_n, irc_lower, all_events
+from irclib import nm_to_n, irc_lower
 from irclib import parse_channel_modes, is_channel
 from irclib import ServerConnectionError
 
@@ -425,7 +425,7 @@ class Channel:
 
     def limit(self):
         if self.has_limit():
-            return self.modes[l]
+            return self.modes["l"]
         else:
             return None
 
